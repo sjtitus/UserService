@@ -1,0 +1,4 @@
+{
+   "watch": ["main.js", "src"],
+   "delay": "3000"
+}
