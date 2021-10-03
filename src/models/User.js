@@ -31,6 +31,9 @@ export class User {
       log.debug(`Create: email=${email}, firstName=${firstName}, lastName=${lastName}`);
       try {
          const dbUser = await DbUser.create(email, firstName, lastName, password);
+         this._dbUser = dbUser;
+         this._convert();
+         return true;
       }
       catch (e) {
          // collision with existing user
@@ -44,9 +47,6 @@ export class User {
             throw(e);
          } 
       }
-      this._dbUser = dbUser;
-      this._convert();
-      return true;
    }
 
    // Note: returns NULL if user DNE
@@ -68,12 +68,12 @@ export class User {
       if (userId === null) {
          assert((this._user.id !== -1 && this._dbUser !== null && this._user.id === this._dbUser["id"]), `Delete: JS and db users not in sync`);
          id = this._user.id;
-         log.debug(`Delete: deleting and reloading in-memory user id=${id}`);
+         log.debug(`Delete: deleting and reloading user id=${id}`);
       }
       else {
          assert(this._user.id === -1 && this._dbUser === null, `Delete (by Id): user must be uninitialized`);
          id = userId; 
-         log.debug(`Delete: deleting loading not-in-memory user id=${id}`);
+         log.debug(`Delete: deleting and loading user id=${id}`);
       }
       const dbUser = await DbUser.delete(id);
       this._dbUser = dbUser;

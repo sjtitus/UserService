@@ -79,9 +79,14 @@ async function userUpdate(email, firstName, lastName, id) {
 }
 
 // Delete
+// Returns null if user not found
 async function userDelete(id) {
     log.debug(`Delete: id='${id}'`);
     const {rows: users} = await db.Query( sql.deleteUser, [id]);
+    if (users.length === 0) {
+        log.debug(`Delete: id=${id}: no user found`);
+        return null;
+    }
     if (users.length !== 1) {
         log.error(`Delete: user id='${id}': unexpected number of records updated: ${users.length}`);
         throw new Error(`Delete: user id '${id}': unexpected number of records updated: ${users.length}`);

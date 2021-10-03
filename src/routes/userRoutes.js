@@ -212,6 +212,7 @@ async function DeleteUserById(req, res, next) {
          return;
       }
       const id = parseInt(req.params.id);
+      log.debug(`DeleteUserById (API): user ${callingUser.UserObject.email} (id=${callingUser.UserObject.id}) deleting user with id ${id}`);
       const errmsg = Validation.ValidateNumber(id);
       if (errmsg) {
          log.warn(`DeleteUserById (API): invalid user id in request: ${errmsg}`);
@@ -226,7 +227,13 @@ async function DeleteUserById(req, res, next) {
          res.sendStatus(404);
          return;
       }
-      res.status(200).json(user.UserObject);
+      // currently logged in user has been deleted
+      // delete the session/cookie
+      if (id === callingUser.UserObject.id) {
+         log.debug(`DeleteUserById (API): calling user was deleted: deleting session/cookie`);
+         DeleteSession(req, res);
+      }
+      res.sendStatus(200);
    }
    catch (err) {
       next(err)
