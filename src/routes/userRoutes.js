@@ -292,15 +292,11 @@ async function delayTest(req, res, next) {
 router.get('/delayTest', delayTest); 
 
 
-
-
-
-
 //_____________________________________________________________________________
 // _LoadLoggedInUser
 // Load and return the currently logged in user from datastore.
-// If a session with a user_id exists but there is no db user, delete the session 
-// and log an error. Returns user or null.
+// Returns user or null.
+// Throws if there is a stale session (user in session but not db) 
 async function _LoadLoggedInUser(req, res) {
    let user = null;
    if ('user_id' in req.session) {

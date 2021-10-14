@@ -20,8 +20,15 @@ export default
             maxAgeDays: 7
         },
         sessionStore: {
-            checkPeriod: 86400000,
-            noDisposeOnSet: true
+            type: 'memorystore',
+            redisConfig: {
+                host: 'localhost',
+                port: 6379 
+            },
+            memoryStoreConfig: {
+                checkPeriod: 86400000,
+                noDisposeOnSet: true
+            }
         }
     },
     database: {
